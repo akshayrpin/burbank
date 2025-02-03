@@ -68,4 +68,4 @@ jobs:
         with:
           app-name: 'AskBurbank'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A61CEFB09DAA4EBB885DB1FE442B9715 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A0DB55BBDB4F4E38B00347BA47411157 }}
