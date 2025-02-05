@@ -1,4 +1,4 @@
-import { FormEvent, useContext, useEffect, useMemo, useState } from 'react'
+import React, { FormEvent, useContext, useEffect, useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { nord } from 'react-syntax-highlighter/dist/esm/styles/prism'
@@ -182,13 +182,19 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
             defaultChecked={negativeFeedbackList.includes(Feedback.OtherUnhelpful)}
             onChange={updateFeedbackList}></Checkbox>
         </Stack>
-        <input type="text" id="othertext" value=""/>
+        
         <div onClick={() => setShowReportInappropriateFeedback(true)} style={{ color: '#115EA3', cursor: 'pointer' }}>
           Report inappropriate content
         </div>
       </>
     )
   }
+  const [otherText, setOtherText] = useState<string>('')
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setOtherText(event.target.value);
+    event.preventDefault()
+  };
 
   const ReportInappropriateFeedbackContent = () => {
     return (
@@ -402,7 +408,7 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
           <div>Your feedback will improve this experience.</div>
 
           {!showReportInappropriateFeedback ? <UnhelpfulFeedbackContent /> : <ReportInappropriateFeedbackContent />}
-
+          <div> <input type="text" id="otherTextid" value={otherText} onChange={handleChange} /> </div>
           <div>By pressing submit, your feedback will be visible to the application owner.</div>
 
           <DefaultButton disabled={negativeFeedbackList.length < 1} onClick={onSubmitNegativeFeedback}>
