@@ -250,7 +250,7 @@
   align-self: stretch;
   flex-grow: 0.3;
   max-width: 30%;
-  overflow-y: hidden;
+  overflow-y: scroll;
   max-height: calc(100vh - 100px);
 }
 

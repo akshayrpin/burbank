@@ -351,7 +351,7 @@ export const ChatHistoryListItemGroups: React.FC<ChatHistoryListItemGroupsProps>
   }, [observerTarget])
 
   return (
-    <div className={styles.listContainer} >
+    <div className={styles.listContainer} data-is-scrollable>
       {groupedChatHistory.map(
         group =>
           group.entries.length > 0 && (
