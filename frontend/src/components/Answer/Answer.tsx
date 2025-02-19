@@ -1,4 +1,4 @@
-import React, { FormEvent, useContext, useEffect, useMemo, useState } from 'react'
+import { FormEvent, useContext, useEffect, useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { nord } from 'react-syntax-highlighter/dist/esm/styles/prism'
@@ -45,6 +45,7 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
     appStateContext?.state.frontendSettings?.feedback_enabled && appStateContext?.state.isCosmosDBAvailable?.cosmosDB
   const SANITIZE_ANSWER = appStateContext?.state.frontendSettings?.sanitize_answer
 
+  const ui = appStateContext?.state.frontendSettings?.ui
   const handleChevronClick = () => {
     setChevronIsExpanded(!chevronIsExpanded)
     toggleIsRefAccordionOpen()
@@ -102,7 +103,7 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
     setFeedbackState(newFeedbackState)
 
     // Update message feedback in db
-    await historyMessageFeedback(answer.message_id, newFeedbackState)
+    await historyMessageFeedback(answer.message_id, newFeedbackState, '')
   }
 
   const onDislikeResponseClicked = async () => {
@@ -117,7 +118,7 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
       // Reset negative feedback to neutral
       newFeedbackState = Feedback.Neutral
       setFeedbackState(newFeedbackState)
-      await historyMessageFeedback(answer.message_id, Feedback.Neutral)
+      await historyMessageFeedback(answer.message_id, Feedback.Neutral, '')
     }
     appStateContext?.dispatch({
       type: 'SET_FEEDBACK_STATE',
@@ -141,7 +142,7 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
 
   const onSubmitNegativeFeedback = async () => {
     if (answer.message_id == undefined) return
-    await historyMessageFeedback(answer.message_id, negativeFeedbackList.join(','))
+    await historyMessageFeedback(answer.message_id, negativeFeedbackList.join(','), otherText)
     resetFeedbackDialog()
   }
 
@@ -182,18 +183,17 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
             defaultChecked={negativeFeedbackList.includes(Feedback.OtherUnhelpful)}
             onChange={updateFeedbackList}></Checkbox>
         </Stack>
-        
         <div onClick={() => setShowReportInappropriateFeedback(true)} style={{ color: '#115EA3', cursor: 'pointer' }}>
           Report inappropriate content
         </div>
       </>
     )
   }
+
   const [otherText, setOtherText] = useState<string>('')
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setOtherText(event.target.value);
-    event.preventDefault()
   };
 
   const ReportInappropriateFeedbackContent = () => {
@@ -331,7 +331,7 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
             </Stack.Item>
           )}
           <Stack.Item className={styles.answerDisclaimerContainer}>
-            <span className={styles.answerDisclaimer}>Generated Content may be incorrect; verify by calling (818) 238-5800 </span>
+            <span className={styles.answerDisclaimer}>{ui?.chat_response_contactmessage}</span>
           </Stack.Item>
           {!!answer.exec_results?.length && (
             <Stack.Item onKeyDown={e => (e.key === 'Enter' || e.key === ' ' ? toggleIsRefAccordionOpen() : null)}>

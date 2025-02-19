@@ -49,6 +49,7 @@ class _UiSettings(BaseSettings):
     favicon: str = "/favicon.ico"
     show_share_button: bool = True
     show_chat_history_button: bool = True
+    chat_response_contactmessage: str = "AI-generated content may be incorrect"
 
 
 class _ChatHistorySettings(BaseSettings):
