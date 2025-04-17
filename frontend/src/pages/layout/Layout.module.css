@@ -5,7 +5,7 @@
 }
 
 .header {
-  background-color: #f2f2f2;
+  background-color: #fff;
 }
 
 .headerContainer {
@@ -29,6 +29,26 @@
   display: flex;
   align-items: flex-end;
   color: #242424;
+}
+
+.powered {
+  font-style: italic;
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 28px;
+  display: flex;
+  align-items: flex-end;
+  color: #242424;
+}
+
+.poweredbycomp {
+  font-style: italic;
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 28px;
+  display: flex;
+  align-items: flex-end;
+  color: #1f54e4;
 }
 
 .headerIcon {

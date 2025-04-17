@@ -44,13 +44,31 @@ class _UiSettings(BaseSettings):
     title: str = "Contoso"
     logo: Optional[str] = None
     chat_logo: Optional[str] = None
-    chat_title: str = "Start chatting"
+    chat_title: str = ""
     chat_description: str = "This chatbot is configured to answer your questions"
     favicon: str = "/favicon.ico"
     show_share_button: bool = True
     show_chat_history_button: bool = True
     chat_response_contactmessage: str = "AI-generated content may be incorrect"
+    poweredby: str = ""
+    poweredbycomp: str = ""
+    poweredbyurl: str = ""
+    headertitle: str = ""
 
+    example_title: Optional[str] = None
+    example_option_1: Optional[str] = None
+    example_option_2: Optional[str] = None
+    example_option_3: Optional[str] = None
+    example_option_4: Optional[str] = None
+    capabilities: Optional[str] = None
+    capabilities_1: Optional[str] = None
+    capabilities_2: Optional[str] = None
+    capabilities_3: Optional[str] = None
+    limitations: Optional[str] = None
+    limitations_1: Optional[str] = None
+    limitations_2: Optional[str] = None
+    limitations_3: Optional[str] = None
+    chat_resp_logo: Optional[str] = None
 
 class _ChatHistorySettings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -64,7 +82,7 @@ class _ChatHistorySettings(BaseSettings):
     account: str
     account_key: Optional[str] = None
     conversations_container: str
-    enable_feedback: bool = False
+    enable_feedback: bool = True
 
 
 class _PromptflowSettings(BaseSettings):

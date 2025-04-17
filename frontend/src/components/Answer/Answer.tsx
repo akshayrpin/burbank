@@ -4,7 +4,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { nord } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { Checkbox, DefaultButton, Dialog, FontIcon, Stack, Text } from '@fluentui/react'
 import { useBoolean } from '@fluentui/react-hooks'
-import { ThumbDislike20Filled, ThumbLike20Filled } from '@fluentui/react-icons'
+import { ThumbDislikeRegular, ThumbLikeRegular } from '@fluentui/react-icons'
 import DOMPurify from 'dompurify'
 import remarkGfm from 'remark-gfm'
 import supersub from 'remark-supersub'
@@ -23,6 +23,9 @@ interface Props {
 }
 
 export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Props) => {
+
+  const [logo, setLogo] = useState('')
+
   const initializeAnswerFeedback = (answer: AskResponse) => {
     if (answer.message_id == undefined) return undefined
     if (answer.feedback == undefined) return undefined
@@ -83,6 +86,22 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
     } else {
       citationFilename = `Citation ${index}`
     }
+
+    if(citation.title && citation.title.includes("#")) {
+      let url = citation.title?citation.title:citationFilename
+      url = url.replaceAll("U+3F", "?")
+      url = url.replaceAll("U+3A", ":")
+      url = url.replaceAll("U+2A", "*")
+      url = url.replaceAll("U+22", "\"")
+      url = url.replaceAll("U+3C", "<")
+      url = url.replaceAll("U+3E", ">")
+      url = url.replaceAll("U+7C", "|")
+      url = url.replaceAll("#", "/")
+      url = url.replaceAll(".html", "")
+      url = "https://" + url
+      citationFilename = url
+    }
+
     return citationFilename
   }
 
@@ -158,24 +177,19 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
         <div>Why wasn't this response helpful?</div>
         <Stack tokens={{ childrenGap: 4 }}>
           <Checkbox
-            label="Citations are missing"
-            id={Feedback.MissingCitation}
-            defaultChecked={negativeFeedbackList.includes(Feedback.MissingCitation)}
-            onChange={updateFeedbackList}></Checkbox>
-          <Checkbox
-            label="Citations are wrong"
+            label="The response isn't helpful."
             id={Feedback.WrongCitation}
             defaultChecked={negativeFeedbackList.includes(Feedback.WrongCitation)}
-            onChange={updateFeedbackList}></Checkbox>
+            onChange={updateFeedbackList}></Checkbox>          
           <Checkbox
-            label="The response is not from my data"
-            id={Feedback.OutOfScope}
-            defaultChecked={negativeFeedbackList.includes(Feedback.OutOfScope)}
-            onChange={updateFeedbackList}></Checkbox>
-          <Checkbox
-            label="Inaccurate or irrelevant"
+            label="The response isn't accurate."
             id={Feedback.InaccurateOrIrrelevant}
             defaultChecked={negativeFeedbackList.includes(Feedback.InaccurateOrIrrelevant)}
+            onChange={updateFeedbackList}></Checkbox>
+          <Checkbox
+            label="There was an issue with the supporting references."
+            id={Feedback.OutOfScope}
+            defaultChecked={negativeFeedbackList.includes(Feedback.OutOfScope)}
             onChange={updateFeedbackList}></Checkbox>
           <Checkbox
             label="Other"
@@ -251,6 +265,7 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
   return (
     <>
       <Stack className={styles.answerContainer} tabIndex={0}>
+       
         <Stack.Item>
           <Stack horizontal grow>
             <Stack.Item grow>
@@ -266,35 +281,6 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
                 components={components}
               />}
             </Stack.Item>
-            <Stack.Item className={styles.answerHeader}>
-              {FEEDBACK_ENABLED && answer.message_id !== undefined && (
-                <Stack horizontal horizontalAlign="space-between">
-                  <ThumbLike20Filled
-                    aria-hidden="false"
-                    aria-label="Like this response"
-                    onClick={() => onLikeResponseClicked()}
-                    style={
-                      feedbackState === Feedback.Positive ||
-                        appStateContext?.state.feedbackState[answer.message_id] === Feedback.Positive
-                        ? { color: 'darkgreen', cursor: 'pointer' }
-                        : { color: 'slategray', cursor: 'pointer' }
-                    }
-                  />
-                  <ThumbDislike20Filled
-                    aria-hidden="false"
-                    aria-label="Dislike this response"
-                    onClick={() => onDislikeResponseClicked()}
-                    style={
-                      feedbackState !== Feedback.Positive &&
-                        feedbackState !== Feedback.Neutral &&
-                        feedbackState !== undefined
-                        ? { color: 'darkred', cursor: 'pointer' }
-                        : { color: 'slategray', cursor: 'pointer' }
-                    }
-                  />
-                </Stack>
-              )}
-            </Stack.Item>
           </Stack>
         </Stack.Item>
         {parsedAnswer?.generated_chart !== null && (
@@ -305,7 +291,7 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
           </Stack>
         )}
         <Stack horizontal className={styles.answerFooter}>
-          {!!parsedAnswer?.citations.length && (
+          {/*!!parsedAnswer?.citations.length && (
             <Stack.Item onKeyDown={e => (e.key === 'Enter' || e.key === ' ' ? toggleIsRefAccordionOpen() : null)}>
               <Stack style={{ width: '100%' }}>
                 <Stack horizontal horizontalAlign="start" verticalAlign="center">
@@ -329,10 +315,39 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
                 </Stack>
               </Stack>
             </Stack.Item>
-          )}
+          )*/}
           <Stack.Item className={styles.answerDisclaimerContainer}>
             <span className={styles.answerDisclaimer}>{ui?.chat_response_contactmessage}</span>
           </Stack.Item>
+          <Stack.Item className={styles.answerHeader}>
+              {FEEDBACK_ENABLED && answer.message_id !== undefined && (
+                <Stack horizontal horizontalAlign="space-between">
+                  <ThumbLikeRegular
+                    aria-hidden="false"
+                    aria-label="Like this response"
+                    onClick={() => onLikeResponseClicked()}
+                    style={
+                      feedbackState === Feedback.Positive ||
+                      appStateContext?.state.feedbackState[answer.message_id] === Feedback.Positive
+                        ? { color: 'darkgreen', cursor: 'pointer' ,fontSize:'20px'}
+                        : { color: 'slategray', cursor: 'pointer' ,fontSize:'20px'}
+                    }
+                  />
+                  <ThumbDislikeRegular
+                    aria-hidden="false"
+                    aria-label="Dislike this response"
+                    onClick={() => onDislikeResponseClicked()}
+                    style={
+                      feedbackState !== Feedback.Positive &&
+                        feedbackState !== Feedback.Neutral &&
+                        feedbackState !== undefined
+                        ? { color: 'darkred', cursor: 'pointer' ,fontSize:'20px'}
+                        : { color: 'slategray', cursor: 'pointer' ,fontSize:'20px'}
+                    }
+                  />
+                </Stack>
+              )}
+            </Stack.Item>
           {!!answer.exec_results?.length && (
             <Stack.Item onKeyDown={e => (e.key === 'Enter' || e.key === ' ' ? toggleIsRefAccordionOpen() : null)}>
               <Stack style={{ width: '100%' }}>
@@ -357,23 +372,38 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
             </Stack.Item>
           )}
         </Stack>
-        {chevronIsExpanded && (
+        { /*chevronIsExpanded*/ (
           <div className={styles.citationWrapper}>
             {parsedAnswer?.citations.map((citation, idx) => {
-              return (
-                <span
-                  title={createCitationFilepath(citation, ++idx)}
-                  tabIndex={0}
-                  role="link"
-                  key={idx}
-                  onClick={() => onCitationClicked(citation)}
-                  onKeyDown={e => (e.key === 'Enter' || e.key === ' ' ? onCitationClicked(citation) : null)}
-                  className={styles.citationContainer}
-                  aria-label={createCitationFilepath(citation, idx)}>
-                  <div className={styles.citation}>{idx}</div>
-                  {createCitationFilepath(citation, idx, true)}
-                </span>
-              )
+              if(citation.title != null && citation.title.includes("#")) {
+                return (
+                  <a href={createCitationFilepath(citation, ++idx)}
+                    tabIndex={0}
+                    role="link"
+                    key={idx}
+                    target='_blank'
+                    className={styles.citationContainer}
+                    aria-label={createCitationFilepath(citation, idx)}>
+                    <div className={styles.citation}>{idx}</div>
+                    {createCitationFilepath(citation, idx, true)}
+                  </a>
+                )
+              } else {
+                return (
+                  <span
+                    title={createCitationFilepath(citation, ++idx)}
+                    tabIndex={0}
+                    role="link"
+                    key={idx}
+                    onClick={() => onCitationClicked(citation)}
+                    onKeyDown={e => (e.key === 'Enter' || e.key === ' ' ? onCitationClicked(citation) : null)}
+                    className={styles.citationContainer}
+                    aria-label={createCitationFilepath(citation, idx)}>
+                    <div className={styles.citation}>{idx}</div>
+                    {createCitationFilepath(citation, idx, true)}
+                  </span>
+                )
+              }  
             })}
           </div>
         )}

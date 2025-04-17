@@ -101,6 +101,25 @@ frontend_settings = {
         "chat_description": app_settings.ui.chat_description,
         "show_share_button": app_settings.ui.show_share_button,
         "show_chat_history_button": app_settings.ui.show_chat_history_button,
+        "chat_response_contactmessage": app_settings.ui.chat_response_contactmessage,
+        "poweredby": app_settings.ui.poweredby,
+        "poweredbycomp": app_settings.ui.poweredbycomp,
+        "poweredbyurl": app_settings.ui.poweredbyurl,
+        "headertitle": app_settings.ui.headertitle,
+        "example_title": app_settings.ui.example_title,
+        "example_option_1": app_settings.ui.example_option_1,
+        "example_option_2":  app_settings.ui.example_option_2,
+        "example_option_3":  app_settings.ui.example_option_3,
+        "example_option_4":  app_settings.ui.example_option_4,
+        "capabilities":  app_settings.ui.capabilities,
+        "capabilities_1":  app_settings.ui.capabilities_1,
+        "capabilities_2": app_settings.ui.capabilities_2,
+        "capabilities_3": app_settings.ui.capabilities_3,
+        "limitations": app_settings.ui.limitations,
+        "limitations_1": app_settings.ui.limitations_1,
+        "limitations_2": app_settings.ui.limitations_2,
+        "limitations_3": app_settings.ui.limitations_3,
+        "chat_resp_logo": app_settings.ui.chat_resp_logo
     },
     "sanitize_answer": app_settings.base_settings.sanitize_answer,
     "oyd_enabled": app_settings.base_settings.datasource_type,
@@ -538,7 +557,9 @@ async def update_message():
     ## check request for message_id
     request_json = await request.get_json()
     message_id = request_json.get("message_id", None)
-    message_feedback = request_json.get("message_feedback", None)
+    message_feedback = request_json.get("message_feedback", None)    
+    other_text = request_json.get("other_text", None)
+    
     try:
         if not message_id:
             return jsonify({"error": "message_id is required"}), 400
@@ -548,7 +569,7 @@ async def update_message():
 
         ## update the message in cosmos
         updated_message = await current_app.cosmos_conversation_client.update_message_feedback(
-            user_id, message_id, message_feedback
+            user_id, message_id, message_feedback, other_text
         )
         if updated_message:
             return (

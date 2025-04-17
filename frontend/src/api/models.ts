@@ -132,6 +132,31 @@ export type UI = {
   show_share_button?: boolean
   show_chat_history_button?: boolean
   chat_response_contactmessage?: string
+  poweredby: string
+  poweredbycomp: string
+  poweredbyurl: string
+  headertitle: string
+  chat_example:string
+  
+  example_logo?: string
+  example_title:string
+  example_option_1:string
+  example_option_2:string
+  example_option_3:string
+  example_option_4:string
+
+  capabilities_logo?: string
+  capabilities:string
+  capabilities_1:string
+  capabilities_2:string
+  capabilities_3:string
+
+  limitations_logo?: string
+  limitations:string
+  limitations_1:string
+  limitations_2:string
+  limitations_3:string
+  chat_resp_logo:string
 }
 
 export type FrontendSettings = {
@@ -147,8 +172,8 @@ export enum Feedback {
   Positive = 'positive',
   Negative = 'negative',
   MissingCitation = 'missing_citation',
-  WrongCitation = 'wrong_citation',
-  OutOfScope = 'out_of_scope',
+  WrongCitation = 'response_nothelpful',
+  OutOfScope = 'issue_reference',
   InaccurateOrIrrelevant = 'inaccurate_or_irrelevant',
   OtherUnhelpful = 'other_unhelpful',
   HateSpeech = 'hate_speech',
