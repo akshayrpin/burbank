@@ -816,11 +816,15 @@ const Chat = () => {
                 ) : (
                 <Stack className={styles.chatEmptyState}>
                   <div className={styles.aiContainer}>
-                  <section className={styles.aiLabel}>
-                      <span>Hi there! 
-                      <img src={ui?.hand_wave_icon} alt="Icon" className={styles.aiWaveIcon}/> 
-                      Got a question about Lomita? I'm here to help.</span>
-                    </section>
+                    {ui?.hand_wave_icon && ui?.hand_wave_icon.length > 0 ? (
+                      <section className={styles.aiLabel}>
+                        <span>Hi there! 
+                        <img src={ui?.hand_wave_icon} alt="Icon" className={styles.aiWaveIcon}/> 
+                        {ui?.chat_description}</span>
+                      </section>
+                    ) : ( 
+                      <span>{ui?.chat_description}</span>
+                    )}
                     <Stack horizontal className={styles.chatInputTop}>
                       <QuestionInput
                         clearOnSend
